@@ -21,6 +21,7 @@ urlpatterns = [
     path('finishedjobs', views.finishedCustomerJobs),
     path('addrating/<int:job_id>/', views.addRating),
     path('getfreelancers/',views.getFreelancers),
+    path('getcustomers/',views.getCustomers),
     path('filter/<str:skills>', views.filterSkills),
     path('hire', views.hireFreelancer),
     path('filtersalary/<int:min_salary>/<int:max_salary>/', views.filterSalary),

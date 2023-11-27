@@ -179,6 +179,33 @@ def getJobbyid(request, id):
 
 
 
+# @api_view(["POST"])
+# @permission_classes([IsAuthenticated])
+# def Choosefreelancer(request, job_id, feedback_job_id):
+#     try:
+#         job = get_object_or_404(Jobs, pk=job_id)
+#         feedback_job = Feedback_jobs.objects.get(pk=feedback_job_id)
+#
+#         if not feedback_job:
+#             return Response({"error": "Feedback job not found"})
+#
+#         if job.customer != feedback_job.jobs.customer:
+#             return Response({"error": "error"})
+#
+#         job.freelancer = feedback_job.freelancer
+#         job.status = 1
+#         job.save()
+#
+#         feedback_job.delete()
+#
+#         serializer = JobsSerializer(job)
+#         return Response(serializer.data)
+#
+#     except Jobs.DoesNotExist:
+#         return Response({"error": "Job not found"})
+#     except Exception as e:
+#         return Response({"error": str(e)})
+
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
 def Choosefreelancer(request, job_id, feedback_job_id):
@@ -190,13 +217,13 @@ def Choosefreelancer(request, job_id, feedback_job_id):
             return Response({"error": "Feedback job not found"})
 
         if job.customer != feedback_job.jobs.customer:
-            return Response({"error": "error"})
+            return Response({"error": "Error"})
 
         job.freelancer = feedback_job.freelancer
         job.status = 1
         job.save()
 
-        feedback_job.delete()
+        Feedback_jobs.objects.filter(jobs=job).delete()
 
         serializer = JobsSerializer(job)
         return Response(serializer.data)
@@ -205,8 +232,6 @@ def Choosefreelancer(request, job_id, feedback_job_id):
         return Response({"error": "Job not found"})
     except Exception as e:
         return Response({"error": str(e)})
-
-
 
 @api_view(["POST"])
 @permission_classes([IsAuthenticated])
@@ -275,6 +300,12 @@ def getFreelancers(request):
     return Response({'job': FreelancerSerializer(data, many=True).data})
 
 
+@api_view(["GET"])
+@permission_classes([IsAuthenticated])
+def getCustomers(request):
+    data = Customer.objects.all()
+    return Response({'job': CustomerSerializer(data, many=True).data})
+
 
 @api_view(["GET"])
 def filterSkills(request, skills):
@@ -300,6 +331,10 @@ def hireFreelancer(request):
         except Freelancer.DoesNotExist:
             return Response({"error": "Freelancer not found"})
     return Response({"error": "error"})
+
+
+
+
 
 
 @api_view(["GET"])
